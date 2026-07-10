@@ -1,16 +1,30 @@
 <div align="center">
 
+<img src="./Images/Demo.png" alt="Auto Temperature Detector Banner" width="600"/>
+
 # 🌡️ Auto Temperature Detector for Entrance
-### COVID-19 Safety & Access Control System
+### A Non-Contact COVID-19 Safety & Access Control System
 
-A non-contact, automated entry-screening system built on the **ATmega328**, combining infrared temperature sensing, laser-based presence detection, and Bluetooth-configurable access control — with real-time status on an onboard LCD.
+Automated entrance screening built on the **ATmega328** — contactless temperature checks, live occupancy control, and Bluetooth-based configuration, all in one embedded system.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Arduino%20%2F%20ATmega328-00979D?logo=arduino&logoColor=white)](./Code)
-[![Made With](https://img.shields.io/badge/Made%20with-C%2B%2B-blue?logo=c%2B%2B)](./Code)
-[![Status](https://img.shields.io/badge/Status-Active-brightgreen.svg)]()
+<p>
+<img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="License"/>
+<img src="https://img.shields.io/badge/Platform-ATmega328-00979D?style=for-the-badge&logo=arduino&logoColor=white" alt="Platform"/>
+<img src="https://img.shields.io/badge/Language-C%2B%2B-blue?style=for-the-badge&logo=c%2B%2B" alt="Language"/>
+<img src="https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge" alt="Status"/>
+<img src="https://img.shields.io/badge/PRs-Welcome-ff69b4?style=for-the-badge" alt="PRs Welcome"/>
+</p>
 
-[Demo](#-demo) • [Features](#-features) • [Hardware](#-hardware) • [Getting Started](#-getting-started) • [Repo Structure](#-repository-structure) • [License](#-license)
+<p>
+<a href="#-demo">Demo</a> •
+<a href="#-features">Features</a> •
+<a href="#-system-architecture">Architecture</a> •
+<a href="#-hardware">Hardware</a> •
+<a href="#-getting-started">Getting Started</a> •
+<a href="#-repository-structure">Structure</a> •
+<a href="#-roadmap">Roadmap</a> •
+<a href="#-license">License</a>
+</p>
 
 </div>
 
@@ -18,38 +32,65 @@ A non-contact, automated entry-screening system built on the **ATmega328**, comb
 
 ## 📖 Overview
 
-COVID-19 made temperature screening and occupancy control mandatory at building entrances. This project automates that process end-to-end: a laser diode/receiver pair detects when someone approaches, a non-contact IR sensor takes their temperature instantly, and the system grants or denies entry based on a configurable safe threshold — no manual checks required.
+The COVID-19 pandemic made temperature screening and occupancy limits mandatory at building entrances — a manual, staff-heavy process prone to human error and bottlenecks. This project automates the entire workflow in hardware:
 
-Room occupancy is tracked live and can be capped at a preset limit. Everything — temperature threshold, occupancy cap, and current headcount — can be monitored and configured wirelessly over Bluetooth.
+A laser diode/receiver pair detects when a person approaches the entrance. A non-contact infrared sensor instantly measures their body temperature. If the reading falls within a safe, configurable range, entry is granted and the live occupancy counter increments; if not, entry is denied and an alert is raised. Room capacity, temperature threshold, and current occupancy are all visible and configurable in real time over Bluetooth — no manual dashboard, no physical checkpoint staff required.
 
 ## 🎥 Demo
 
-> Full demonstration video and build photos are available in [`/Videos`](./Videos) and [`/Images`](./Images).
-
 <div align="center">
-<img src="./Images/ckt.bmp" alt="Circuit Diagram" width="400"/>
-<img src="./Images/pcb.bmp" alt="PCB Layout" width="400"/>
+<img src="./Images/ckt.bmp" alt="Circuit Diagram" width="380"/>
+<img src="./Images/pcb.bmp" alt="PCB Layout" width="380"/>
 </div>
+
+> 📹 Full demonstration video available in [`/Videos`](./Videos)
 
 ## ✨ Features
 
-- 🔴 **Contactless temperature screening** using an infrared sensor — no physical contact needed
-- 🚦 **Automatic entry control** — grants/denies access based on a configurable temperature threshold
-- 👥 **Live occupancy tracking** with a preset maximum room capacity
-- 📱 **Bluetooth configuration** — set thresholds and view live occupancy from a mobile app
-- 🖥️ **Real-time LCD status display**
-- 🔋 **Regulated, protected power supply** (bridge rectifier + 7805 regulator with thermal/short-circuit protection)
+| | |
+|---|---|
+| 🔴 **Contactless Screening** | Infrared sensor takes temperature without any physical contact |
+| 🚦 **Automatic Access Control** | Grants or denies entry based on a configurable temperature threshold |
+| 👥 **Live Occupancy Tracking** | Enforces a preset maximum room capacity in real time |
+| 📱 **Bluetooth Configuration** | Set thresholds, view occupancy, and monitor status from a mobile app |
+| 🖥️ **Real-Time LCD Feedback** | 16×2 display shows live system status at the entrance |
+| 🔔 **Audible Alerts** | Buzzer signals denied entry or fault conditions |
+| 🔋 **Protected Power Supply** | Bridge rectifier + 7805 regulator with thermal & short-circuit protection |
+
+## 🧠 System Architecture
+
+```
+   ┌─────────────┐      ┌───────────────────┐      ┌────────────────────┐
+   │  Laser +    │─────▶│   IR Temperature   │─────▶│   ATmega328 Core    │
+   │  Receiver   │      │      Sensor        │      │  (Decision Logic)  │
+   └─────────────┘      └───────────────────┘      └──────────┬─────────┘
+      Presence               Body Temp                        │
+      Detection               Reading                         │
+                                                ┌───────────────┴───────────────┐
+                                                ▼                               ▼
+                                     ✅  Within Threshold              ❌  Above Threshold
+                                     • Entry Granted                   • Entry Denied
+                                     • Occupancy +1                    • Buzzer Alert
+                                     • LCD: "Access OK"                • LCD: "Access Denied"
+                                                │                               │
+                                                └───────────────┬───────────────┘
+                                                                 ▼
+                                                    📟 LCD Status  +  📱 Bluetooth Sync
+                                                (threshold, occupancy, live headcount)
+```
 
 ## 🧩 Hardware
 
+<div align="center">
+
 | Component | Role |
 |---|---|
-| **ATmega328** | Core microcontroller |
+| **ATmega328** | Core microcontroller — decision logic & control |
 | Non-Contact IR Temperature Sensor | Body temperature measurement |
 | Laser Diode + Receiver | Entrance / presence detection |
-| HC-05 Bluetooth Module | Wireless config & monitoring |
-| 16x2 LCD Display | Real-time status output |
-| 7805 Voltage Regulator | Regulated 5V supply |
+| HC-05 Bluetooth Module | Wireless configuration & live monitoring |
+| 16×2 LCD Display | Real-time status output |
+| 7805 Voltage Regulator | Regulated, protected 5V supply |
 | Diode Bridge Rectifier | AC → DC conversion |
 | BC547 Transistor | Switching |
 | Buzzer | Audible alerts |
@@ -57,73 +98,68 @@ Room occupancy is tracked live and can be capped at a preset limit. Everything �
 | Resistors, Capacitors, Crystal Oscillator | Supporting circuitry |
 | Push Buttons | Manual overrides |
 
-📋 Full parts list with quantities: [`Hardwares/BOM.xlsx`](./Hardwares/BOM.xlsx)
-📑 Component datasheets: [`/Datasheets`](./Datasheets)
+</div>
 
-## ⚙️ How It Works
-
-```
- ┌────────────┐     ┌──────────────────┐     ┌─────────────────┐
- │  Laser +   │────▶│  IR Temperature   │────▶│  Threshold Check │
- │  Receiver  │     │     Sensor        │     │   (ATmega328)    │
- └────────────┘     └──────────────────┘     └────────┬─────────┘
-                                                         │
-                              ┌──────────────────────────┼──────────────────────────┐
-                              ▼                                                     ▼
-                     ✅ Below Threshold                                    ❌ Above Threshold
-                     → Entry Granted                                      → Entry Denied
-                     → Occupancy +1                                       → Buzzer Alert
-                              │                                                     │
-                              └──────────────────────┬──────────────────────────────┘
-                                                       ▼
-                                          📟 LCD Status + 📱 Bluetooth Sync
-```
+📋 Full parts list with quantities — [`Hardwares/BOM.xlsx`](./Hardwares/BOM.xlsx)
+📑 Component datasheets — [`/Datasheets`](./Datasheets)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - [Arduino IDE](https://www.arduino.cc/en/software)
-- ATmega328-based board (Arduino Uno/Nano or standalone chip + ISP programmer)
-- HC-05 Bluetooth module paired with a serial terminal or companion app
+- ATmega328-based board (Arduino Uno/Nano, or a bare ATmega328 + ISP programmer)
+- HC-05 Bluetooth module + a serial terminal or companion mobile app
 
 ### Installation
 
 ```bash
-# 1. Clone the repository
+# Clone the repository
 git clone https://github.com/Fahedshaikh32/Auto-Temperature-Detector-Covid-Safety.git
+cd Auto-Temperature-Detector-Covid-Safety
 
-# 2. Open the sketch
-Code/code.ino.txt   # rename to code.ino before opening in Arduino IDE
+# Open the firmware
+# Rename Code/code.ino.txt → code.ino before opening in Arduino IDE
 ```
 
-1. Wire the circuit as shown in [`/Images`](./Images).
+1. Assemble the circuit as shown in the schematic and PCB layout in [`/Images`](./Images).
 2. In Arduino IDE: **Tools → Board** → select your ATmega328-based board.
-3. **Tools → Port** → select the correct COM/serial port.
-4. Click **Upload**.
-5. Power the circuit via the regulated 5V supply.
-6. Pair your phone with the HC-05 module and configure temperature threshold + room capacity.
+3. **Tools → Port** → select the correct serial/COM port.
+4. Click **Upload** to flash the firmware.
+5. Power the circuit through the regulated 5V supply as per the schematic.
+6. Pair your phone with the HC-05 module and set your temperature threshold and room capacity via the companion app.
 
 ## 📁 Repository Structure
 
 ```
-├── Code/            Arduino / ATmega328 firmware
-├── Datasheets/      Component datasheets
-├── Docs/            Reference material & report format template
-├── Hardwares/        Bill of Materials (BOM)
-├── Images/          Circuit diagram, PCB layout, block diagram, photos
-├── Videos/          Project demo video
-├── LICENSE          MIT License
+Auto-Temperature-Detector-Covid-Safety/
+├── Code/            → Arduino / ATmega328 firmware
+├── Datasheets/      → Component datasheets (ATmega328, sensors, regulator, etc.)
+├── Docs/            → Reference material & department report format template
+├── Hardwares/       → Bill of Materials (BOM)
+├── Images/          → Circuit diagram, PCB layout, block diagram, demo photos
+├── Videos/          → Project demonstration video
+├── LICENSE          → MIT License
 └── README.md
 ```
 
 ## 📚 Documentation
 
-- [`Docs/Documentation Data.docx`](./Docs) — theory & component background
-- [`Docs/Report_format_guide.pdf`](./Docs) — department report formatting template
+| File | Description |
+|---|---|
+| [`Docs/Documentation Data.docx`](./Docs) | Background theory & component reference material |
+| [`Docs/Report_format_guide.pdf`](./Docs) | Department-prescribed report formatting template |
+
+## 🗺️ Roadmap
+
+- [ ] Add contactless door/gate actuation (motorized entry lock)
+- [ ] Web dashboard for remote occupancy monitoring
+- [ ] Data logging (temperature readings + timestamps) to SD card / cloud
+- [ ] Multi-entry-point support with centralized occupancy sync
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome. Feel free to check the [issues page](../../issues) or open a pull request.
+Contributions, issues, and feature requests are welcome — feel free to check the [issues page](https://github.com/Fahedshaikh32/Auto-Temperature-Detector-Covid-Safety/issues) or open a pull request.
 
 ## 📄 License
 
@@ -132,5 +168,9 @@ This project is licensed under the [MIT License](./LICENSE).
 ---
 
 <div align="center">
-Made with ❤️ for safer public spaces
+
+**Made with ❤️ for safer public spaces**
+
+⭐ If this project helped you, consider giving it a star!
+
 </div>
